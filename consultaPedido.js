@@ -2,13 +2,14 @@ const axios = require('axios');
 
 async function consultarPedido(numeroPedido, token) {
   try {
-    const response = await axios.get(`https://www.bling.com.br/Api/v3/pedidos?numero=${numeroPedido}`, {
+    const response = await axios.get(`https://www.bling.com.br/Api/v3/pedidos?filters=numero[igual]=${numeroPedido}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
 
-    const pedido = response.data.data?.[0];
+    const data = response.data.data;
+    const pedido = Array.isArray(data) && data.length > 0 ? data[0] : null;
 
     if (!pedido) throw new Error('Pedido não encontrado na resposta.');
 
