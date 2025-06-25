@@ -18,7 +18,12 @@ async function consultarPedido(numeroPedido, token) {
     };
 
   } catch (error) {
-    console.error("Erro na consulta:", error.response?.data || error.message);
+    console.error("Erro na consulta:", {
+  status: error.response?.status,
+  data: error.response?.data,
+  message: error.message
+});
+    
     return null;
   }
 }
