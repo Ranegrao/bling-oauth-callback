@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 
 app.get('/pedido', async (req, res) => {
   const { numero } = req.query;
-  const token = req.headers.authorization?.replace('Bearer ', '');
+  const token = (req.headers.authorization && req.headers.authorization.replace('Bearer ', '')) || req.query.token;
 
   if (!numero || !token) {
     return res.status(400).send('Número do pedido ou token ausente.');
