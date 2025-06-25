@@ -2,7 +2,7 @@ const axios = require('axios');
 
 async function consultarPedido(numeroPedido, token) {
   try {
-    const response = await axios.get(`https://bling.com.br/Api/v3/pedidos?numero=${numeroPedido}`, {
+    const response = await axios.get(`https://bling.com.br/Api/v3/pedidos/${numeroPedido}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
