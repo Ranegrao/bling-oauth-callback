@@ -1,28 +1,17 @@
-const express = require('express');
-const consultarPedido = require('./consultaPedido');
+const axios = require('axios');
 
-const app = express();
-
-app.get('/pedido', async (req, res) => {
-  const numero = req.query.numero;
-  const token = req.query.token;
-
-  console.log('🏷️ ROTA /pedido chamada com:', { numero, token });
-
-  if (!numero || !token) {
-    console.log('❌ Faltou numero ou token');
-    return res.status(400).send('Número do pedido ou token ausente.');
-  }
-
-  try {
-    const pedido = await consultarPedido(numero, token);
-    console.log('✅ Pedido encontrado:', pedido);
-    return res.json(pedido);
-  } catch (err) {
-    console.error('🔥 ERRO ao consultar pedido:', err.message);
-    return res.status(500).send('Erro ao consultar pedido.');
-  }
-});
-
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Servidor ouvindo na porta ${PORT}`));
+async function consultarPedido(numeroPedido, token) {
+  const url = `https://bling.com.br/Api/v3/pedidos?filters=numeroLoja[igual]=${numeroPedido}`;
+  console.log('🔎 consultando no Bling:', url);
+  const response = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
+  const data = response.data.data;
+  const pedido = Array.isArray(data) && data.length > 0 ? data[0] : null;
+  if (!pedido) throw new Error('Pedido não encontrado');
+  return {
+    raw: pedido,
+    situacao: pedido.situacao,
+    cliente: (pedido.cliente || {}).nome || 'Nome não informado',
+    data: pedido.data
+  };
+}
+module.exports = consultarPedido;
