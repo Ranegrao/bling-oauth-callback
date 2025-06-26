@@ -1,26 +1,28 @@
 const express = require('express');
-const app = express();
 const consultarPedido = require('./consultaPedido');
 
+const app = express();
+
 app.get('/pedido', async (req, res) => {
-  const numeroPedido = req.query.numero;
+  const numero = req.query.numero;
   const token = req.query.token;
 
-  console.log("Requisição recebida com número:", numeroPedido, "e token:", token);
+  console.log('🏷️ ROTA /pedido chamada com:', { numero, token });
 
-  if (!numeroPedido || !token) {
-    return res.status(400).send("Parâmetros 'numero' e 'token' são obrigatórios.");
+  if (!numero || !token) {
+    console.log('❌ Faltou numero ou token');
+    return res.status(400).send('Número do pedido ou token ausente.');
   }
 
   try {
-    const resultado = await consultarPedido(numeroPedido, token);
-    res.json(resultado);
-  } catch (error) {
-    console.error("Erro ao consultar pedido:", error.message);
-    res.status(500).send("Erro ao consultar pedido.");
+    const pedido = await consultarPedido(numero, token);
+    console.log('✅ Pedido encontrado:', pedido);
+    return res.json(pedido);
+  } catch (err) {
+    console.error('🔥 ERRO ao consultar pedido:', err.message);
+    return res.status(500).send('Erro ao consultar pedido.');
   }
 });
 
-app.listen(10000, () => {
-  console.log("Servidor ouvindo na porta 10000");
-});
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`Servidor ouvindo na porta ${PORT}`));
