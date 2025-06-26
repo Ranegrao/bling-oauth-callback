@@ -2,7 +2,7 @@ const axios = require('axios');
 
 async function consultarPedido(numeroPedido, token) {
   try {
-    const url = `https://www.bling.com.br/Api/v3/pedidos?filters=numeroLoja[igual]=${numeroPedido}`;
+    const url = `https://www.bling.com.br/Api/v3/pedidos?limit=1`;
     console.log("Consultando Bling:", url);
 
     const response = await axios.get(url, {
@@ -17,7 +17,7 @@ async function consultarPedido(numeroPedido, token) {
     if (!pedido) throw new Error('Pedido não encontrado na resposta.');
 
     return {
-      numero: pedido.numero,
+  raw: pedido};
       situacao: pedido.situacao,
       cliente: pedido.cliente?.nome,
       data: pedido.data
