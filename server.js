@@ -28,5 +28,5 @@ app.get('/pedido', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor ouvindo na porta ${PORT}`);
+  console.log("Requisição recebida com número:", numeroPedido, "e token:", token);
 });
