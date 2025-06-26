@@ -2,7 +2,7 @@ const axios = require('axios');
 
 async function consultarPedido(numeroPedido, token) {
   try {
-    const url = `https://www.bling.com.br/Api/v3/pedidos?filters=numeroLoja[igual]=${numeroPedido}&limit=1`;
+    const url = `https://bling.com.br/Api/v3/pedidos?filters=numeroLoja[igual]=${numeroPedido}`;
     console.log("Consultando Bling:", url);
 
     const response = await axios.get(url, {
@@ -18,19 +18,14 @@ async function consultarPedido(numeroPedido, token) {
 
     return {
       raw: pedido,
-      situacao: pedido.situacao || 'Situação não informada',
-      cliente: (pedido.cliente && pedido.cliente.nome) || 'Nome não informado',
-      data: pedido.data || {}
+      situacao: pedido.situacao,
+      cliente: (pedido.cliente || {}).nome || 'Nome não informado',
+      data: pedido.data
     };
 
   } catch (error) {
-    console.error("Erro na consulta:", {
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message
-    });
-
-    throw new Error('Erro ao consultar pedido.');
+    console.error("Erro na consulta:", error.response?.data || error.message);
+    throw new Error("Erro ao consultar pedido.");
   }
 }
 
