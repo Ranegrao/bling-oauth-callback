@@ -19,7 +19,7 @@ async function consultarPedido(numeroPedido, token) {
     return {
   raw: pedido};
       situacao: pedido.situacao,
-      cliente: (pedido.cliente || {}).nome || 'Nome não informado',
+      cliente: pedido.cliente && pedido.cliente.nome ? pedido.cliente.nome : 'Nome não informado',
       data: pedido.data
     };
 
