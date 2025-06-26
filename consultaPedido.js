@@ -2,7 +2,10 @@ const axios = require('axios');
 
 async function consultarPedido(numeroPedido, token) {
   try {
-    const response = await axios.get(`https://www.bling.com.br/Api/v3/pedidos?filters=numeroLoja[igual]=${numeroPedido}`, {
+    const url = `https://www.bling.com.br/Api/v3/pedidos?filters=numeroLoja[igual]=${numeroPedido}`;
+    console.log("Consultando Bling:", url);
+
+    const response = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -19,13 +22,13 @@ async function consultarPedido(numeroPedido, token) {
       cliente: pedido.cliente?.nome,
       data: pedido.data
     };
+
   } catch (error) {
     console.error("Erro na consulta:", {
       status: error.response?.status,
       data: error.response?.data,
       message: error.message
     });
-
     return null;
   }
 }
