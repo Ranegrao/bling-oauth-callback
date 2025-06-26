@@ -1,32 +1,26 @@
 const express = require('express');
-const axios = require('axios');
+const app = express();
 const consultarPedido = require('./consultaPedido');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send('<h2>Servidor funcionando. Use /pedido?numero=123</h2>');
-});
-
 app.get('/pedido', async (req, res) => {
-  const { numero } = req.query;
-  const token = (req.headers.authorization && req.headers.authorization.replace('Bearer ', '')) || req.query.token;
+  const numeroPedido = req.query.numero;
+  const token = req.query.token;
 
-  if (!numero || !token) {
-    return res.status(400).send('Número do pedido ou token ausente.');
+  console.log("Requisição recebida com número:", numeroPedido, "e token:", token);
+
+  if (!numeroPedido || !token) {
+    return res.status(400).send("Parâmetros 'numero' e 'token' são obrigatórios.");
   }
 
-  const resultado = await consultarPedido(numero, token);
-  if (!resultado) {
-    return res.status(500).send('Erro ao consultar pedido.');
+  try {
+    const resultado = await consultarPedido(numeroPedido, token);
+    res.json(resultado);
+  } catch (error) {
+    console.error("Erro ao consultar pedido:", error.message);
+    res.status(500).send("Erro ao consultar pedido.");
   }
-
-  res.json(resultado);
 });
 
-app.listen(PORT, () => {
-  console.log("Requisição recebida com número:", numeroPedido, "e token:", token);
+app.listen(10000, () => {
+  console.log("Servidor ouvindo na porta 10000");
 });
